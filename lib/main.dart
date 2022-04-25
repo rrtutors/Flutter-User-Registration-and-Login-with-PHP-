@@ -50,7 +50,7 @@ var _loginStatus=0;
   getPref() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     setState(() {
-      _loginStatus = preferences.getInt("value");
+      _loginStatus = preferences.getInt("value")!;
 
 
     });

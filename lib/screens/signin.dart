@@ -16,13 +16,15 @@ class SignIn extends StatefulWidget {
 
 class _SignInState extends State<SignIn> {
   final _formKey = GlobalKey<FormState>();
-  String email, password;
+ late String email, password;
   bool isLoading=false;
   TextEditingController _emailController=new TextEditingController();
   TextEditingController _passwordController=new TextEditingController();
   GlobalKey<ScaffoldState>_scaffoldKey=GlobalKey();
+  late ScaffoldMessengerState scaffoldMessenger ;
   @override
   Widget build(BuildContext context) {
+    scaffoldMessenger = ScaffoldMessenger.of(context);
     return Scaffold(
       key: _scaffoldKey,
         body: SingleChildScrollView(
@@ -134,7 +136,7 @@ class _SignInState extends State<SignIn> {
                                   color: Colors.white70, fontSize: 15),
                             ),
                             onSaved: (val) {
-                              email = val;
+                              email = val!;
                             },
                           ),
                           SizedBox(
@@ -153,7 +155,7 @@ class _SignInState extends State<SignIn> {
                                   color: Colors.white70, fontSize: 15),
                             ),
                             onSaved: (val) {
-                              email = val;
+                              email = val!;
                             },
                           ),
                           SizedBox(
@@ -169,7 +171,7 @@ class _SignInState extends State<SignIn> {
                                     }
                                   if(_emailController.text.isEmpty||_passwordController.text.isEmpty)
                                   {
-                                    _scaffoldKey.currentState.showSnackBar(SnackBar(content:Text("Please Fill all fileds")));
+                                    scaffoldMessenger.showSnackBar(SnackBar(content:Text("Please Fill all fileds")));
                                     return;
                                   }
                                   login(_emailController.text,_passwordController.text);
@@ -260,7 +262,7 @@ class _SignInState extends State<SignIn> {
     };
     print(data.toString());
     final  response= await http.post(
-        LOGIN,
+        Uri.parse(LOGIN),
         headers: {
           "Accept": "application/json",
           "Content-Type": "application/x-www-form-urlencoded"
@@ -284,10 +286,10 @@ class _SignInState extends State<SignIn> {
       }else{
         print(" ${resposne['message']}");
       }
-      _scaffoldKey.currentState.showSnackBar(SnackBar(content:Text("${resposne['message']}")));
+      scaffoldMessenger.showSnackBar(SnackBar(content:Text("${resposne['message']}")));
 
     } else {
-      _scaffoldKey.currentState.showSnackBar(SnackBar(content:Text("Please try again!")));
+      scaffoldMessenger.showSnackBar(SnackBar(content:Text("Please try again!")));
     }
 
 
