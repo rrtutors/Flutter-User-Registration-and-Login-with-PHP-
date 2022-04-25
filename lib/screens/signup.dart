@@ -17,9 +17,10 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
-  String name,email, password;
+ late String name,email, password;
   bool isLoading=false;
   GlobalKey<ScaffoldState>_scaffoldKey=GlobalKey();
+ late ScaffoldMessengerState scaffoldMessenger ;
   var reg=RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
 
   TextEditingController _nameController=new TextEditingController();
@@ -27,6 +28,7 @@ class _SignUpState extends State<SignUp> {
   TextEditingController _passwordController=new TextEditingController();
   @override
   Widget build(BuildContext context) {
+    scaffoldMessenger = ScaffoldMessenger.of(context);
     return Scaffold(
       key: _scaffoldKey,
         body: SingleChildScrollView(
@@ -140,7 +142,7 @@ class _SignUpState extends State<SignUp> {
                                   color: Colors.white70, fontSize: 15),
                             ),
                             onSaved: (val) {
-                              name = val;
+                              name = val!;
                             },
                           ),
                           SizedBox(
@@ -161,7 +163,7 @@ class _SignUpState extends State<SignUp> {
                                   color: Colors.white70, fontSize: 15),
                             ),
                             onSaved: (val) {
-                              email = val;
+                              email = val!;
                             },
                           ),
                           SizedBox(
@@ -180,7 +182,7 @@ class _SignUpState extends State<SignUp> {
                                   color: Colors.white70, fontSize: 15),
                             ),
                             onSaved: (val) {
-                              password = val;
+                              password = val!;
                             },
                           ),
                           SizedBox(
@@ -206,17 +208,17 @@ class _SignUpState extends State<SignUp> {
                                     }
                                     if(_nameController.text.isEmpty)
                                     {
-                                      _scaffoldKey.currentState.showSnackBar(SnackBar(content:Text("Please Enter Name")));
+                                      scaffoldMessenger.showSnackBar(SnackBar(content:Text("Please Enter Name")));
                                       return;
                                     }
                                     if(!reg.hasMatch(_emailController.text))
                                     {
-                                      _scaffoldKey.currentState.showSnackBar(SnackBar(content:Text("Enter Valid Email")));
+                                      scaffoldMessenger.showSnackBar(SnackBar(content:Text("Enter Valid Email")));
                                       return;
                                     }
                                     if(_passwordController.text.isEmpty||_passwordController.text.length<6)
                                     {
-                                      _scaffoldKey.currentState.showSnackBar(SnackBar(content:Text("Password should be min 6 characters")));
+                                      scaffoldMessenger.showSnackBar(SnackBar(content:Text("Password should be min 6 characters")));
                                       return;
                                     }
                                     signup(_nameController.text,_emailController.text,_passwordController.text);
@@ -280,7 +282,7 @@ class _SignUpState extends State<SignUp> {
     };
     print(data.toString());
     final  response= await http.post(
-      REGISTRATION,
+      Uri.parse(REGISTRATION),
       headers: {
         "Accept": "application/json",
         "Content-Type": "application/x-www-form-urlencoded"
@@ -306,10 +308,10 @@ class _SignUpState extends State<SignUp> {
         }else{
         print(" ${resposne['message']}");
       }
-      _scaffoldKey.currentState.showSnackBar(SnackBar(content:Text("${resposne['message']}")));
+      scaffoldMessenger.showSnackBar(SnackBar(content:Text("${resposne['message']}")));
 
     } else {
-      _scaffoldKey.currentState.showSnackBar(SnackBar(content:Text("Please Try again")));
+      scaffoldMessenger.showSnackBar(SnackBar(content:Text("Please Try again")));
     }
 
   }
